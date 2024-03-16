@@ -1,0 +1,37 @@
+# Preface
+
+This document was prepared for the International Atomic Energy Agency's (IAEA)
+Probabilistic Fault Displacement Analysis (PFDHA) Benchmarking Study in support
+of a new Technical Document (TECDOC) tentatively titled *Benchmarking Current 
+Practices in Probabilistic Fault Displacement Hazard Assessment for Nuclear 
+Installations*. 
+
+The purpose of this document is to provide fault displacement hazard results 
+based on the Kuehn et al. (2024) fault displacement amplitude prediction model for a set 
+of benchmarking scenarios. First, a high-level overview of the model is provided.
+Next, a short discussion on model implementation is given to help the user
+interpret the results. Lastly, the results of each scenario are provided.
+
+The 2024 version of the model has been submitted to *Earthquake Spectra* and is in review
+at the time of this writing. It supersedes the 2022 version with significant updates, and
+the 2022 results should not be used. 
+
+The key differences in the updated 2024 model are our use of a Box-Cox transformation on
+the data (previously we used lognormal) and the removal of the event term $\delta_\gamma$ 
+that was used to model between-event variability in the shape of the displacement profile
+for dip-slip events. Relative to the earlier version of the model, using the Box-Cox
+transformation improved the model performance and removing the addition event term
+simplifies the forward application of the model.
+
+The input parameters, calculations, results, and documentations are available 
+on Github at [https://github.com/asarmy/iaea-benchmarking-kea24](https://github.com/asarmy/iaea-benchmarking-kea24).
+
+# Authors and Affiliations
+
+- Alexandra Sarmiento\textsuperscript{1}
+- Albert Kottke, Ph.D.\textsuperscript{2}
+- Nicolas Kuehn, Ph.D.\textsuperscript{1}
+
+\textsuperscript{1} University of California, Los Angeles
+\textsuperscript{2} Pacific Gas & Electric Company
+

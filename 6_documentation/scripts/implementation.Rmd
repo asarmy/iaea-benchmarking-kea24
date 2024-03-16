@@ -1,0 +1,58 @@
+# Model Implementation
+
+The KEA24 model is different from other FDMs in three key ways. First, the model
+was developed using Bayesian inference, which means the model coefficients and
+parameters are defined with probability distributions, rather than point estimates. 
+Second, the model predicts an asymmetric slip profile along the full normalized 
+rupture length, and both the median and standard deviation predictions vary along 
+the full (rather than folded) length. Third, the model uses a Box-Cox transformation, 
+instead of lognormal, so the back-transformation requires an additional parameter. 
+Each of these has an effect on how the model is implemented.
+
+## Handling of Model Coefficients and Parameters
+
+The model coefficients and parameters are defined as correlated probability 
+distributions. This is the key advantage of using Bayesian inference, because the 
+full epistemic uncertainty in the model is captured with these distributions. 
+However, this means an analytical solution for the model is not available, and 
+therefore the KEA24 model developers used Markov Chain Monte Carlo (MCMC) sampling 
+to generate 1,000 correlated coefficients from the posterior distributions. As a 
+result, there are two main ways to implement the KEA24 FDM:
+
+1. Calculate $\mu$ and $\sigma$ using the mean of each coefficient/parameter.
+2. Calculate $\mu$ and $\sigma$ for $N$ samples of the correlated coefficients/parameters 
+(recommended).
+
+We refer to (1) as the *mean model* and (2) as the *full model* herein. The
+model predictions were calculated for all 1,000 samples where the full model 
+is used herein. We recommend using the full model results; the mean model 
+results are provided for comparisons purposes only.
+
+## Handling of Asymmetric Slip Profiles
+
+While empirical slip profiles are commonly asymmetric, the skewness usually 
+cannot be predicted a priori. As a result, most FDMs were developed using 
+empirical slip profiles that were folded about the rupture midpoint and
+therefore predict symmetrical profiles where the peak median displacement 
+occurs at the midpoint. 
+
+The KEA24 FDM predicts an asymmetrical slip profile where the profile peak 
+occurs at $U_* \le 0.5$. Because both the median and standard deviation 
+predictions vary along the full rupture length $U_* ~\epsilon~ [0, 1]$, the 
+predicted displacement (i.e., $\mu$ and $\sigma$) at $U_*$ and $1 - U_*$ is 
+different, and therefore the hazard curves will be different. In most cases, the 
+hazard curves should be computed twice (for $U_*$ and $1 - U_*$) and weighted
+equally, as we have done herein.
+
+## Back-Transformation to Arithemetic Displacement
+
+Correlated model estimates of the Box-Cox transformation parameter $\lambda$ 
+are provided with the model coefficients. The predicted aggregated displacement
+in arthimetic units (meters) is calculated using the back-transformation
+
+$$D = (Y\lambda + 1)^{1/\lambda}$$
+
+where $Y$ is the transformed displacement at the aleatory quantile of interest.
+An analytical solution for the back-transformed mean aggregated displacement in
+meters is provided in Kuehn et al. (2024).
+
